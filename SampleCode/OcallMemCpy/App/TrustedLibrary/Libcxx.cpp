@@ -29,21 +29,23 @@
  *
  */
 
+#include <stdio.h>
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <stdlib.h>
-#include <assert.h>
+/* ecall_libcxx_functions:
+ *   Invokes standard C++ functions.
+ */
+void ecall_libcxx_functions(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    ret = ecall_exception(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
+    ret = ecall_map(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
 }
-#endif
-
-#endif /* !_ENCLAVE_H_ */

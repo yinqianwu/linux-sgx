@@ -30,20 +30,26 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+/* Libc.edl - EDL sample for trusted C library. */
 
-#include <stdlib.h>
-#include <assert.h>
+enclave {
+    
+    from "sgx_tstdc.edl" import sgx_oc_cpuidex;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    /* 
+     * A subset of the C99 standard is supported as well as SGX customized functions: 
+     *  sgx_cpuid, etc.
+     */
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
+    trusted {
+        /*
+         * Utilize malloc/free in enclave.
+         */
+        public void ecall_malloc_free(void);
 
-#endif /* !_ENCLAVE_H_ */
+        /*
+         * Utilize SGX version __cpuid() in enclave.
+         */
+        public void ecall_sgx_cpuid([out] int cpuinfo[4], int leaf);
+    };
+};

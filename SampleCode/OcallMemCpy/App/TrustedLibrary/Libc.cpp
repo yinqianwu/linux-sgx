@@ -30,20 +30,22 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+#include "../App.h"
+#include "Enclave_u.h"
 
-#include <stdlib.h>
-#include <assert.h>
+/* ecall_libc_functions:
+ *   Invokes standard C functions.
+ */
+void ecall_libc_functions(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
+    ret = ecall_malloc_free(global_eid);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    int cpuid[4] = {0x0, 0x0, 0x0, 0x0};
+    ret = ecall_sgx_cpuid(global_eid, cpuid, 0x0);
+    if (ret != SGX_SUCCESS)
+        abort();
 }
-#endif
-
-#endif /* !_ENCLAVE_H_ */

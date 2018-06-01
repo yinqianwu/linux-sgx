@@ -29,21 +29,34 @@
  *
  */
 
+/* Enclave.edl - Top EDL file. */
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+enclave {
+    
+    include "user_types.h" /* buffer_t */
 
-#include <stdlib.h>
-#include <assert.h>
+    /* Import ECALL/OCALL from sub-directory EDLs.
+     *  [from]: specifies the location of EDL file. 
+     *  [import]: specifies the functions to import, 
+     *  [*]: implies to import all functions.
+     */
+    
+    from "Edger8rSyntax/Types.edl" import *;
+    from "Edger8rSyntax/Pointers.edl" import *;
+    from "Edger8rSyntax/Arrays.edl" import *;
+    from "Edger8rSyntax/Functions.edl" import *;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    from "TrustedLibrary/Libc.edl" import *;
+    from "TrustedLibrary/Libcxx.edl" import ecall_exception, ecall_map;
+    from "TrustedLibrary/Thread.edl" import *;
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
+    trusted{
+        public void ecall_mymemcpy();
+    };
 
-#endif /* !_ENCLAVE_H_ */
+    untrusted {
+        void ocall_print_string([in, string] const char *str);
+        void ocall_strcpy([out,size=DeLen] char *DeStr,[in,size=SoLen] char *SoStr,size_t DeLen,size_t SoLen);
+    };
+
+};

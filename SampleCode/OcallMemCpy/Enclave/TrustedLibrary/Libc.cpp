@@ -30,20 +30,30 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+#include <string.h>
+#include "sgx_cpuid.h"
 
-#include <stdlib.h>
-#include <assert.h>
+#include "sgx_trts.h"
+#include "../Enclave.h"
+#include "Enclave_t.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
+/* ecall_malloc_free:
+ *   Uses malloc/free to allocate/free trusted memory.
+ */
+void ecall_malloc_free(void)
+{
+    void *ptr = malloc(100);
+    assert(ptr != NULL);
+    memset(ptr, 0x0, 100);
+    free(ptr);
 }
-#endif
 
-#endif /* !_ENCLAVE_H_ */
+/* ecall_sgx_cpuid:
+ *   Uses sgx_cpuid to get CPU features and types.
+ */
+void ecall_sgx_cpuid(int cpuinfo[4], int leaf)
+{
+    sgx_status_t ret = sgx_cpuid(cpuinfo, leaf);
+    if (ret != SGX_SUCCESS)
+        abort();
+}

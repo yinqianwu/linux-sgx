@@ -35,6 +35,8 @@
 
 #include "Enclave.h"
 #include "Enclave_t.h"  /* print_string */
+#define DeLen 50
+#define SoLen 100
 
 /* 
  * printf: 
@@ -49,3 +51,12 @@ void printf(const char *fmt, ...)
     va_end(ap);
     ocall_print_string(buf);
 }
+
+void ecall_mymemcpy()
+{
+    char DeStr[DeLen]="";
+    char SoStr[SoLen]="cheney";
+    ocall_strcpy(DeStr,SoStr,DeLen,SoLen);
+    printf("%s\n", DeStr);
+}
+

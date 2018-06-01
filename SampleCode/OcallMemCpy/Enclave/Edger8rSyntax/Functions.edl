@@ -30,20 +30,59 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+/* Functions.edl - Samples for function attributes. */
 
-#include <stdlib.h>
-#include <assert.h>
+enclave {
+    
+    /* 
+     * Following keywords/attributes are supported for untrusted functions: 
+     *      cdecl, stdcall, fastcall, dllimport (only for Windows).
+     *      [public] is only supported for the trusted functions.
+     * Trusted function will be treated as [private] w/o the [public].
+     */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    trusted {
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
+        public void ecall_function_calling_convs(void);
+        
+        /*
+         * [public]:
+         *      public ECALL can be called directly in App.
+         */
+        
+        public void ecall_function_public(void);
 
-#endif /* !_ENCLAVE_H_ */
+        /*
+         * [private]:
+         *      private ECALL cannot be called directly in App.
+         */
+        
+        int ecall_function_private(void);
+    
+    };
+
+    untrusted {
+        
+        /*
+         * [cdecl]:
+         *      tells edger8r the calling convention of the OCALLs is 'cdecl'.
+         * [dllimport]:
+         *      indicats the OCALL is provided in DLLs.
+         *
+         * Note: memccpy() is provided by MS system DLL, we don't need to implement it in App side.
+         */
+        
+        [cdecl, dllimport] void *memccpy([in, out, size=len] void *dest, [in, size=len] const void *src, int val, size_t len);
+        
+        /*
+         * [allow]:
+         *      OCALL 'ocall_function_allow' can invoke ECALL 'ecall_function_private' in App side. 
+         *
+         * Note: No ECALL can be called in OCALL w/o [allow].
+         */
+        
+        void ocall_function_allow(void) allow(ecall_function_private);
+    
+    };
+
+};

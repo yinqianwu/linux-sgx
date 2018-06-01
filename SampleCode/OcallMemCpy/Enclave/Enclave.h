@@ -41,7 +41,7 @@ extern "C" {
 #endif
 
 void printf(const char *fmt, ...);
-void ecall_mymemcpy();
+
 #if defined(__cplusplus)
 }
 #endif

@@ -30,20 +30,23 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+/* Libcxx.edl - EDL sample for trusted C++ library. */
 
-#include <stdlib.h>
-#include <assert.h>
+enclave {
+    
+    /* 
+     * A subset of the C++03 standard is supported.
+     */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    trusted {
+        /*
+         * Throw/catch exception inside the enclave.
+         */
+        public void ecall_exception(void);
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
-
-#endif /* !_ENCLAVE_H_ */
+        /*
+         * Utilize <map> inside the enclave.
+         */
+        public void ecall_map(void);
+    };
+};

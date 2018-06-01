@@ -29,21 +29,23 @@
  *
  */
 
+/* Thread.edl - EDL sample for trusted thread library. */
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+enclave {
 
-#include <stdlib.h>
-#include <assert.h>
+    from "sgx_tstdc.edl" import sgx_thread_wait_untrusted_event_ocall, sgx_thread_set_untrusted_event_ocall, sgx_thread_setwait_untrusted_events_ocall, sgx_thread_set_multiple_untrusted_events_ocall;
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+    trusted {
+        /*
+         * Use SGX mutex.
+         */
+        public size_t ecall_increase_counter();
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
+        /*
+         * Use SGX condition variables.
+         */
+        public void ecall_producer();
+        public void ecall_consumer();
 
-#endif /* !_ENCLAVE_H_ */
+    };
+};

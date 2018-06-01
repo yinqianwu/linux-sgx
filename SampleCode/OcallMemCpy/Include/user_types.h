@@ -30,20 +30,11 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+/* User defined types */
 
-#include <stdlib.h>
-#include <assert.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+#define LOOPS_PER_THREAD 500
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
-}
-#endif
+typedef void *buffer_t;
+typedef int array_t[10];
 
-#endif /* !_ENCLAVE_H_ */

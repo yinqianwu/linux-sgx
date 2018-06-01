@@ -227,13 +227,6 @@ void ocall_print_string(const char *str)
     printf("%s", str);
 }
 
-void ocall_strcpy(char *DeStr,char *SoStr,size_t DeLen,size_t SoLen){
-    if (DeLen > SoLen)
-        DeLen = SoLen;
-    if (DeLen)
-        memcpy(DeStr,SoStr,DeLen);
-}
-
 
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
@@ -248,7 +241,7 @@ int SGX_CDECL main(int argc, char *argv[])
         getchar();
         return -1; 
     }
-
+ 
     /* Utilize edger8r attributes */
     edger8r_array_attributes();
     edger8r_pointer_attributes();
@@ -260,9 +253,6 @@ int SGX_CDECL main(int argc, char *argv[])
     ecall_libcxx_functions();
     ecall_thread_functions();
 
-    ecall_mymemcpy(global_eid);
-
-
     /* Destroy the enclave */
     sgx_destroy_enclave(global_eid);
     
@@ -270,7 +260,6 @@ int SGX_CDECL main(int argc, char *argv[])
 
     printf("Enter a character before exit ...\n");
     getchar();
-
     return 0;
 }
 

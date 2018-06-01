@@ -30,20 +30,55 @@
  */
 
 
-#ifndef _ENCLAVE_H_
-#define _ENCLAVE_H_
+/* Test Calling Conventions */
 
-#include <stdlib.h>
-#include <assert.h>
+#include <string.h>
+#include <stdio.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+#include "../Enclave.h"
+#include "Enclave_t.h"
 
-void printf(const char *fmt, ...);
-void ecall_mymemcpy();
-#if defined(__cplusplus)
+/* ecall_function_calling_convs:
+ *   memccpy is defined in system C library.
+ */
+void ecall_function_calling_convs(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+
+    char s1[] = "1234567890";
+    char s2[] = "0987654321";
+
+    char buf[BUFSIZ] = {'\0'};
+    memcpy(buf, s1, strlen(s1));
+
+    ret = memccpy(NULL, s1, s2, '\0', strlen(s1));
+    
+    if (ret != SGX_SUCCESS)
+        abort();
+    assert(memcmp(s1, s2, strlen(s1)) == 0);
+
+    return;
 }
-#endif
 
-#endif /* !_ENCLAVE_H_ */
+/* ecall_function_public:
+ *   The public ECALL that invokes the OCALL 'ocall_function_allow'.
+ */
+void ecall_function_public(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+
+    ret = ocall_function_allow();
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    return;
+}
+
+/* ecall_function_private:
+ *   The private ECALL that only can be invoked in the OCALL 'ocall_function_allow'.
+ */
+int ecall_function_private(void)
+{
+    return 1;
+}
+
